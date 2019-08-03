@@ -13,6 +13,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,12 +49,19 @@ public class BookController {
 	}
 
 	@GetMapping("/list")
+	@Retryable(value = RuntimeException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
 	public String bookList(Model model, Pageable pageable) {
 		ResponseEntity<Collection<Book>> response = restTemplate.exchange(BOOK_REST_URL,
 				HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Book>>() {
 				});
 		model.addAttribute("books", response.getBody());
 		return "/book/list";
+	}
+	
+	@Recover
+	private String recoverBookList(Throwable throwable) {
+		System.out.println(throwable.getMessage());
+		return "/book/error";
 	}
 
 	@GetMapping("/edit/{id}")
