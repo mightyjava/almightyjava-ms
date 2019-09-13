@@ -15,7 +15,13 @@
 		<link rel="stylesheet" href="${path}/webjars/bootstrap/4.1.3/css/bootstrap.min.css">
 		<link rel="stylesheet" href="${path}/webjars/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="${path}/css/common.css">
+		<link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
 		<title><spring:message code="title.welcome.page"/></title>
+		<style>
+			body {
+				font-family: 'Arvo', serif;
+			}
+		</style>
 	</head>
 	<body>
 		<jsp:directive.include file="menu.jsp" />
